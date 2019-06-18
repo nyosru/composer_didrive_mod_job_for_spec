@@ -1,0 +1,105 @@
+{% spaceless %}
+
+    {# номер авторизованного пользователя #}
+    {# { pa(aut_user) } #}
+
+    {% if 1 == 2 %}
+
+        {% set now_job = where_now_job_people( db, session.now_user.id ) %}
+        {# { pa(now_job) } #}
+
+        {% for k,v in cheks %}
+        {% endfor %}
+
+        {# { session.now_user.soc_web_link } #}
+        {# { pa(sp0.data) } #}
+
+    {% endif %}
+
+
+    {% set sps = readItems( 'sale_point', null )  %}
+
+    {% set mans = readItems( '070.jobman', null )  %}
+    {#{ pa(mans.data) }#}
+    {#{ pa(mans.data[aut_user]['dop']['sale_point']) }#}
+
+    {% set now_job = where_now_job_people( db, aut_user ) %}
+    {# { pa(now_job) } #}
+
+    {% if now_job.sale_point is defined %}    
+
+        <form action="" method="post" id="form_spec_check">
+
+            <input type='hidden' name='id_item_check' value='{{ now_job.id }}' >
+            
+            Где вы сейчас <Br/>
+
+            <h2>{{ sps.data[now_job.sale_point]['head'] }}</h2>
+            <input type='hidden' name='sp' value='{{ now_job.sale_point }}' >
+            
+            <br/>
+            <br/>
+            
+            <button type=submit class="btn btn-success" >Закончил смену</button>
+
+            <input type='hidden' name='user' value='{{ aut_user }}' >
+            <input type='hidden' name='action' value='end_job_in_sp' >
+            <input type='hidden' name='s' value='{{ creatSecret('end_job_in_sp'~aut_user~'-'~now_job.id) }}' >
+
+            <input type='hidden' name='print_res_to_id' value='res123' >
+            <input type='hidden' name='ajax_url' value='{{ constant('dir_site_module_nowlev') }}ajax.php' >
+            <input type='hidden' name='hide_id_before_success' value='form_spec_check' >
+            <input type='hidden' name='redirect_to_success' value='https://{{ server.HTTP_HOST }}/index.php?level={{ get.level|default('000.index') }}&warn=' >
+
+        </form>
+            
+        
+        
+        
+        
+        
+        
+    {% else %}    
+
+        <form action="" method="post" id="form_spec_check">
+
+            Где вы сейчас <Br/>
+
+            <select class="form-control" name="sale_point">
+
+                {# <option>Выберите точку где вы сегодня</option> #}
+                {% for sp_id,sp in sps.data if sp.head != 'default' and sp.status == 'show' %}
+                    <option value="{{ sp.id }}"
+
+                            {% if mans.data[aut_user]['dop']['sale_point'] is defined and mans.data[aut_user]['dop']['sale_point'] == sp.id %}
+                                selected="selected"
+                            {% endif %}
+
+                            >{{ sp.head }}</option>
+                {% endfor %}
+
+            </select>
+
+            <br/>
+
+            <button type=submit class="btn btn-success" >Старт</button>
+            {#
+            <button type=submit class="btn btn-success" >Закончил смену</button>
+            #}
+
+            <input type='hidden' name='user' value='{{ aut_user }}' >
+            <input type='hidden' name='action' value='enter_in_sp' >
+            <input type='hidden' name='s' value='{{ creatSecret('enter_in_sp'~aut_user) }}' >
+
+            <input type='hidden' name='print_res_to_id' value='res123' >
+            <input type='hidden' name='ajax_url' value='{{ constant('dir_site_module_nowlev') }}ajax.php' >
+            <input type='hidden' name='hide_id_before_success' value='form_spec_check' >
+            <input type='hidden' name='redirect_to_success' value='https://{{ server.HTTP_HOST }}/index.php?level={{ get.level|default('000.index') }}&warn=' >
+
+        </form>
+            
+    {% endif %}
+    
+    <div id='res123'></div>
+
+{% endspaceless %}

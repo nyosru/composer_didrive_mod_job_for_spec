@@ -1,0 +1,39 @@
+{% spaceless %}
+    {# { pa(session) } #}
+
+    <div class="container" >
+        <div class="row" >
+            <div class="col-xs-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4 xcol-xl-4 xcol-xl-offset-4 text-center" >
+
+                {% if get.warn is defined and get.warn|length > 1 %}
+                    <div class="alert-warning" style="padding:10px;" >{{ get.warn }}</div>
+                {% endif %}
+
+                {% if session.now_user.id is defined %}
+
+                    {% set aut_user = whois_spec_this_socweb( db, session.now_user.id ) %}
+
+                    {# если есть чел авторизованный #}
+                    {% if aut_user is defined and aut_user|length > 0 %}
+
+                        {# { pa(aut_user) } #}
+                        {% include constant('dir_site_module_nowlev_tpl')~'body.base.aut_view.htm' %} 
+
+                        {# если есть чел не авторизованный #}
+                    {% else %}
+
+                        <p>Пожалуйста сообщите администратору что вы авторизовались и сообщите номер авторизации <b>{{ session.now_user.id }}</b> </p>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+            {#
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" >
+            {% include constant('dir_site_module_nowlev_tpl')~'body.page.htm' %} 
+            </div>
+            #}
+        </div>
+    </div>
+{% endspaceless %}
