@@ -83,20 +83,19 @@ elseif (isset($_POST['action']) && $_POST['action'] == 'end_job_in_sp') {
 
     require $_SERVER['DOCUMENT_ROOT'] . '/all/ajax.start.php';
     require $_SERVER['DOCUMENT_ROOT'] . '/vendor/didrive_mod/items/class.php';
+    require $_SERVER['DOCUMENT_ROOT'] . '/vendor/didrive_mod/job_spec/class.php';
     // echo \Nyos\Nyos::$folder_now;
 
     require $_SERVER['DOCUMENT_ROOT'] . '/sites/' . \Nyos\Nyos::$folder_now . '/config.func.php';
-    $r = get_no_fin_sp($db, \Nyos\Nyos::$folder_now, $_REQUEST['user']);
-
-    // \f\pa($r);
+    // $r = get_no_fin_sp($db, \Nyos\Nyos::$folder_now, $_REQUEST['user']);
+    $r = \Nyos\mod\job_for_spec::whereNowJobmanUser($db, $_SESSION['now_user']['id'] , \Nyos\Nyos::$folder_now );
+    //\f\pa($r);
     // echo $_REQUEST['sp'];
 
-
-
-    if ($r['sale_point'] == $_REQUEST['sp']) {
+    if ($r['data']['sale_point'] == $_REQUEST['sp']) {
 
         \f\db\db2_insert($db, 'mitems-dops', array(
-            'id_item' => $r['id'],
+            'id_item' => $r['data']['id_check'],
             'name'=>'fin' ,
             'value' => date('Y-m-d H:i', $_SERVER['REQUEST_TIME'])
         ));

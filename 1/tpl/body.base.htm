@@ -9,31 +9,35 @@
                     <div class="alert-warning" style="padding:10px;" >{{ get.warn }}</div>
                 {% endif %}
 
+                {#% set aut_soc_user = who_are_you( db, session.now_user.id) %#}
                 {% if session.now_user.id is defined %}
+                    {# вход выполнен #}
 
-                    {% set aut_user = whois_spec_this_socweb( db, session.now_user.id ) %}
+                    {% set aut_soc_user = where_now_job_user( db, session.now_user.id) %}
+                    {#{ pa(aut_soc_user) }#}
 
-                    {# если есть чел авторизованный #}
-                    {% if aut_user is defined and aut_user|length > 0 %}
-
-                        {# { pa(aut_user) } #}
-                        {% include constant('dir_site_module_nowlev_tpl')~'body.base.aut_view.htm' %} 
-
-                        {# если есть чел не авторизованный #}
-                    {% else %}
+                    {% if aut_soc_user.status is defined and aut_soc_user.status == 'error' %}
+                        {# вход выполнен но нет привязки к работнику #}
 
                         <p>Пожалуйста сообщите администратору что вы авторизовались и сообщите номер авторизации <b>{{ session.now_user.id }}</b> </p>
 
+                    {% elseif aut_soc_user.status is defined and aut_soc_user.status == 'ok' %}
+                        {# вход выполнен и есть привязка к работнику #}
+
+                        {% include constant('dir_mods_mod_vers_tpl')~'body.base.aut_view.htm' %} 
+
                     {% endif %}
+
+                {% else %}
+                    {# не выполнен вход #}
+
+                    <br/>
+                    <br/>
+                    <p>Добро пожаловать</p>
 
                 {% endif %}
 
             </div>
-            {#
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" >
-            {% include constant('dir_site_module_nowlev_tpl')~'body.page.htm' %} 
-            </div>
-            #}
         </div>
     </div>
 {% endspaceless %}
